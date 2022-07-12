@@ -1,5 +1,6 @@
+from write_console_output_MA import write_console_output
 from write_csv_data_MA import write_csv_data
-import sys
+import argparse
 import pefile
 
 pe_imp_fields = ["Executable", "Library", "Imported function"]
@@ -7,7 +8,7 @@ FIELD_EXENAME = 0
 FIELD_LIBNAME = 1
 FIELD_IMPORT = 2
 
-def generate_pe_import_list(arg_fname_list):
+def get_pe_imports(arg_fname_list):
     
     data = list()
     pe = 0
@@ -48,28 +49,33 @@ def generate_pe_import_list(arg_fname_list):
     return data
 
 def main():
-    print("LightW's \"Get PE Imports\"")
+    print("LightW's Malana - \"Get PE Imports\"")
     print()
 
-    argc = len(sys.argv)
-
-    if argc == 1:
-        print("Usage:")
-        print("lw_get_pe_imports.py <outfile (csv)> <filename> [filename] [filename] ...")
-        exit()
-
-    if argc == 2:
-        print("Please, provide at least one file")
-        exit()
+    parser = argparse.ArgumentParser(description = "List imported symbols of PE files")
+    parser.add_argument(
+        "filename",
+        type = str,
+        nargs = '+',
+        help = "Name of the file to be analyzed"
+    )
+    parser.add_argument(
+        "-o",
+        metavar = "csvoutput",
+        type = str,
+        required = False,
+        help = "Output file where data is written in CSV format"
+    )
+    args = parser.parse_args()
+    fname_set = set(args.filename)
         
-    fname_set = set()
-    for i in range(2, argc):
-        fname_set.add(sys.argv[i])
-        
-    data = generate_pe_import_list(fname_set)
-    write_csv_data(data, pe_imp_fields, sys.argv[1])
-        
-    print("Imported functions of files provided written to " + sys.argv[1])
+    data = get_pe_imports(fname_set)
+    if args.o == None:
+        print()
+        write_console_output(data)
+    else:
+        write_csv_data(data, pe_imp_fields, args.o)
+        print("Imported symbols of files provided written to " + args.o)
 
     print()
     print("I'm leaving now, bye bye!")

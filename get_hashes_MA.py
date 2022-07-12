@@ -1,5 +1,6 @@
+from write_console_output_MA import write_console_output
 from write_csv_data_MA import write_csv_data
-import sys
+import argparse
 import pefile
 import hashlib
 import ssdeep
@@ -18,7 +19,7 @@ HASH_SSDEEP = 3
 HASH_IMPHASH = 4
 HASH_SECTION = 5
 
-def generate_hash_list(arg_fname_list):
+def get_hashes(arg_fname_list):
     
     data = list()
 
@@ -97,28 +98,33 @@ def generate_hash_list(arg_fname_list):
     return data
 
 def main():
-    print("LightW's \"Get Hashes\"")
+    print("LightW's Malana - \"Get Hashes\"")
     print()
 
-    argc = len(sys.argv)
-
-    if argc == 1:
-        print("Usage:")
-        print("lw_get_hashes.py <outfile (csv)> <filename> [filename] [filename] ...")
-        exit()
-
-    if argc == 2:
-        print("Please, provide at least one file")
-        exit()
+    parser = argparse.ArgumentParser(description = "List hashes of files")
+    parser.add_argument(
+        "filename",
+        type = str,
+        nargs = '+',
+        help = "Name of the file to be analyzed"
+    )
+    parser.add_argument(
+        "-o",
+        metavar = "csvoutput",
+        type = str,
+        required = False,
+        help = "Output file where data is written in CSV format"
+    )
+    args = parser.parse_args()
+    fname_set = set(args.filename)
         
-    fname_set = set()
-    for i in range(2, argc):
-        fname_set.add(sys.argv[i])
-        
-    data = generate_hash_list(fname_set)
-    write_csv_data(data, hash_fields, sys.argv[1])
-    
-    print("Hashes of files provided written to " + sys.argv[1])
+    data = get_hashes(fname_set)
+    if args.o == None:
+        print()
+        write_console_output(data)
+    else:
+        write_csv_data(data, hash_fields, args.o)
+        print("Hashes of files provided written to " + args.o)
 
     print()
     print("I'm leaving now, bye bye!")
