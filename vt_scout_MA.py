@@ -1,4 +1,4 @@
-from lw_api_keys import vt_api_key
+from api_keys_MA import vt_api_key
 import hashlib
 import sys
 import vt

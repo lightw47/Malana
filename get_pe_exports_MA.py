@@ -1,28 +1,48 @@
+from get_hashes_MA import FIELD_FILENAME
+from write_csv_data_MA import write_csv_data
 import sys
 import pefile
-import csv
 
 pe_exp_fields = ["Executable/Library", "Exported symbol"]
+FIELD_FILENAME = 0
+FIELD_EXPORT = 1
 
 def generate_pe_export_list(arg_fname_list):
-    list_dict = list()
+    
+    data = list()
     pe = 0
 
     for fname in arg_fname_list:
+        
         try:
             pe = pefile.PE(fname)
             if hasattr(pe, "DIRECTORY_ENTRY_EXPORT"):
                 print("Processing exported symbols: " + fname)
+                
                 for exp in pe.DIRECTORY_ENTRY_EXPORT.symbols:
-                    list_dict.append({pe_exp_fields[0]: fname, pe_exp_fields[1]: exp.name.decode("utf-8")})
+
+                    if exp.name != None:
+                        data.append({
+                            pe_exp_fields[FIELD_FILENAME]: fname,
+                            pe_exp_fields[FIELD_EXPORT]: exp.name.decode("utf-8")
+                        })
+
+                    else:
+                        data.append({
+                            pe_exp_fields[FIELD_FILENAME]: fname,
+                            pe_exp_fields[FIELD_EXPORT]: str(exp.ordinal)
+                        })
+            
             else:
                 print("Have no export section: " + fname)
+        
         except pefile.PEFormatError:
             print("Is not a PE file: " + fname)
+        
         except FileNotFoundError:
             print("File not found: " + fname)
             
-    return list_dict
+    return data
 
 def main():
     print("LightW's \"Get PE Exports\"")
@@ -39,17 +59,14 @@ def main():
         print("Please, provide at least one file")
         exit()
         
-    fname_list = list()
+    fname_set = set()
     for i in range(2, argc):
-        fname_list.append(sys.argv[i])
+        fname_set.add(sys.argv[i])
         
-    with open(sys.argv[1], "w") as outfile:    
-        list_dict = generate_pe_export_list(fname_list)
-        csvw = csv.DictWriter(outfile, fieldnames = pe_exp_fields)
-        csvw.writeheader()
-        csvw.writerows(list_dict)
-        
-        print("Exported symbols of files provided written to " + sys.argv[1])
+    data = generate_pe_export_list(fname_set)
+    write_csv_data(data, pe_exp_fields, sys.argv[1])
+
+    print("Exported symbols of files provided written to " + sys.argv[1])
 
     print()
     print("I'm leaving now, bye bye!")
