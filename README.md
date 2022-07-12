@@ -25,4 +25,7 @@ All of them share the same usage:
 
 `<script name> [-h] [-o csvoutput] filename [filename ...]`
 
-Just invoke the script name, provide at least one file name and the script outputs the desired information in Python's dictionary format. If needed, you can use the `-o csvoutput` option to save the data in CSV format. 
+Just invoke the script name, provide at least one file name and the script outputs the desired information in Python's dictionary format. If needed, you can use the `-o csvoutput` option to save the data in CSV format.
+
+### Using VirusTotal Api
+Some scripts use VirusTotal API (currently, only `vt_scout_MA.py` needs it). To use them, update the file `api_keys_MA.py` and replace the dummy API keys with your own keys.
