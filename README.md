@@ -15,4 +15,14 @@ To install `ssdeep`, you might have to install some libraries before installing 
 `vt` is also easily installev via pip: `pip install vt-py`
 
 ## How to use
-I'm improving on this... please wait.
+Malana currently consists of the following "core" scripts:
+- `get_hashes_MA.py`
+- `get_pe_exports_MA.py`
+- `get_pe_imports_MA.py`
+- `vt_scout_MA.py`
+
+All of them share the same usage:
+
+`<script name> [-h] [-o csvoutput] filename [filename ...]`
+
+Just invoke the script name, provide at least one file name and the script outputs the desired information in Python's dictionary format. If needed, you can use the `-o csvoutput` option to save the data in CSV format. 
