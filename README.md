@@ -8,11 +8,11 @@ Malana depends on
 - `ssdeep`
 - `vt`
 
-`pefile` can be easily installed via pip (`pip install pefile`)
+`pefile` can be easily installed via pip: `pip install pefile`
 
 To install `ssdeep`, you might have to install some libraries before installing the package itself. On Linux systems,  you just need to install `libfuzzy` before `pip install ssdeep`. On Windows, download [ssdeep Python wrapper for Windows](https://github.com/MacDue/ssdeep-windows-32_64), then run `setup.py install`.
 
-To install `vt`... (wip)
+`vt` is also easily installev via pip: `pip install vt-py`
 
 ## How to use
 I'm improving on this... please wait.
