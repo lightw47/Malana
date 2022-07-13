@@ -3,9 +3,7 @@ from write_csv_data_MA import write_csv_data
 import argparse
 import pefile
 
-pe_exp_fields = ["Executable/Library", "Exported symbol"]
-FIELD_FILENAME = 0
-FIELD_EXPORT = 1
+pe_exp_fields = ["filename", "export"]
 
 def get_pe_exports(arg_fname_list):
     
@@ -23,14 +21,14 @@ def get_pe_exports(arg_fname_list):
 
                     if exp.name != None:
                         data.append({
-                            pe_exp_fields[FIELD_FILENAME]: fname,
-                            pe_exp_fields[FIELD_EXPORT]: exp.name.decode("utf-8")
+                            "filename": fname,
+                            "export": exp.name.decode("utf-8")
                         })
 
                     else:
                         data.append({
-                            pe_exp_fields[FIELD_FILENAME]: fname,
-                            pe_exp_fields[FIELD_EXPORT]: str(exp.ordinal)
+                            "filename": fname,
+                            "export": str(exp.ordinal)
                         })
             
             else:

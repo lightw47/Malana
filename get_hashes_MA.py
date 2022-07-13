@@ -5,13 +5,9 @@ import pefile
 import hashlib
 import ssdeep
 
-hash_fields = ["File name", "Hash type", "Section name", "Digest"]
-FIELD_FILENAME = 0
-FIELD_HASHTYPE = 1
-FIELD_SECNAME = 2
-FIELD_DIGEST = 3
+hash_fields = ["filename", "hash_type", "section_name", "digest"]
 
-hash_types = ["md5", "sha1", "sha256", "ssdeep", "imphash", "section hash"]
+hash_types = ["md5", "sha1", "sha256", "ssdeep", "imphash", "section_hash"]
 HASH_MD5 = 0
 HASH_SHA1 = 1
 HASH_SHA256 = 2
@@ -40,34 +36,34 @@ def get_hashes(arg_fname_list):
         
         digest = hashlib.md5(content).hexdigest()
         data.append({
-            hash_fields[FIELD_FILENAME]: fname,
-            hash_fields[FIELD_HASHTYPE]: hash_types[HASH_MD5],
-            hash_fields[FIELD_SECNAME]: None,
-            hash_fields[FIELD_DIGEST]: digest
+            "filename": fname,
+            "hash_type": hash_types[HASH_MD5],
+            "section_name": None,
+            "digest": digest
         })
         
         digest = hashlib.sha1(content).hexdigest()
         data.append({
-            hash_fields[FIELD_FILENAME]: fname,
-            hash_fields[FIELD_HASHTYPE]: hash_types[HASH_SHA1],
-            hash_fields[FIELD_SECNAME]: None,
-            hash_fields[FIELD_DIGEST]: digest
+            "filename": fname,
+            "hash_type": hash_types[HASH_SHA1],
+            "section_name": None,
+            "digest": digest
         })
         
         digest = hashlib.sha256(content).hexdigest()
         data.append({
-            hash_fields[FIELD_FILENAME]: fname,
-            hash_fields[FIELD_HASHTYPE]: hash_types[HASH_SHA256],
-            hash_fields[FIELD_SECNAME]: None,
-            hash_fields[FIELD_DIGEST]: digest
+            "filename": fname,
+            "hash_type": hash_types[HASH_SHA256],
+            "section_name": None,
+            "digest": digest
         })
     
         fuzzy_hash = ssdeep.hash_from_file(fname)
         data.append({
-            hash_fields[FIELD_FILENAME]: fname,
-            hash_fields[FIELD_HASHTYPE]: hash_types[HASH_SSDEEP],
-            hash_fields[FIELD_SECNAME]: None,
-            hash_fields[FIELD_DIGEST]: fuzzy_hash
+            "filename": fname,
+            "hash_type": hash_types[HASH_SSDEEP],
+            "section_name": None,
+            "digest": fuzzy_hash
         })
     
         try:
@@ -75,19 +71,19 @@ def get_hashes(arg_fname_list):
         
             imphash = pe.get_imphash()
             data.append({
-                hash_fields[FIELD_FILENAME]: fname,
-                hash_fields[FIELD_HASHTYPE]: hash_types[HASH_IMPHASH],
-                hash_fields[FIELD_SECNAME]: None,
-                hash_fields[FIELD_DIGEST]: imphash
+                "filename": fname,
+                "hash_type": hash_types[HASH_IMPHASH],
+                "section_name": None,
+                "digest": imphash
             })
             
             for section in pe.sections:
                 sechash = section.get_hash_md5()
                 data.append({
-                    hash_fields[FIELD_FILENAME]: fname,
-                    hash_fields[FIELD_HASHTYPE]: hash_types[HASH_SECTION],
-                    hash_fields[FIELD_SECNAME]: section.Name.decode("utf-8"),
-                    hash_fields[FIELD_DIGEST]: sechash
+                    "filename": fname,
+                    "hash_type": hash_types[HASH_SECTION],
+                    "section_name": section.Name.decode("utf-8"),
+                    "digest": sechash
                 })
         
         except pefile.PEFormatError:

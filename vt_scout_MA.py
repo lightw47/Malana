@@ -1,18 +1,11 @@
 from api_keys_MA import vt_api_key
-from get_hashes_MA import FIELD_FILENAME
 from write_console_output_MA import write_console_output
 from write_csv_data_MA import write_csv_data
 import argparse
 import hashlib
 import vt
 
-analysis_fields = ["File name", "SHA256", "Engine", "Category", "Result", "Engine update"]
-FIELD_FILENAME = 0
-FIELD_SHA256 = 1
-FIELD_ENGINE = 2
-FIELD_CATEGORY = 3
-FIELD_RESULT = 4
-FIELD_ENUPDATE = 5
+vt_analysis_fields = ["filename", "sha256", "engine_name", "category", "result", "engine_update"]
 
 def vt_scout(arg_fname_list):
 
@@ -33,12 +26,12 @@ def vt_scout(arg_fname_list):
                     for entry in analysis:
 
                         data.append({
-                            analysis_fields[FIELD_FILENAME]: fname,
-                            analysis_fields[FIELD_SHA256]: hash,
-                            analysis_fields[FIELD_ENGINE]: analysis[entry]["engine_name"],
-                            analysis_fields[FIELD_CATEGORY]: analysis[entry]["category"],
-                            analysis_fields[FIELD_RESULT]: analysis[entry]["result"],
-                            analysis_fields[FIELD_ENUPDATE]: analysis[entry]["engine_update"]
+                            "filename": fname,
+                            "sha256": hash,
+                            "engine_name": analysis[entry]["engine_name"],
+                            "category": analysis[entry]["category"],
+                            "result": analysis[entry]["result"],
+                            "engine_update": analysis[entry]["engine_update"]
                         })
 
             except vt.APIError as err:
@@ -53,7 +46,7 @@ def main():
     print("LightW's Malana - \"VT Scout\"")
     print()
 
-    parser = argparse.ArgumentParser(description = "Shows last analysis results of given files\nThis script does NOT submit files to Virus Total, it just looks for their hashes in VT")
+    parser = argparse.ArgumentParser(description = "Shows last analysis results of given files. This script does NOT submit files to Virus Total, it just looks for their hashes in VT")
     parser.add_argument(
         "filename",
         type = str,

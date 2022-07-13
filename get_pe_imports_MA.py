@@ -3,10 +3,7 @@ from write_csv_data_MA import write_csv_data
 import argparse
 import pefile
 
-pe_imp_fields = ["Executable", "Library", "Imported function"]
-FIELD_EXENAME = 0
-FIELD_LIBNAME = 1
-FIELD_IMPORT = 2
+pe_imp_fields = ["filename", "dll_name", "import"]
 
 def get_pe_imports(arg_fname_list):
     
@@ -25,16 +22,16 @@ def get_pe_imports(arg_fname_list):
                         
                         if imp.name != None:
                             data.append({
-                                pe_imp_fields[FIELD_EXENAME]: fname,
-                                pe_imp_fields[FIELD_LIBNAME]: entry.dll.decode("utf-8"),
-                                pe_imp_fields[FIELD_IMPORT]: imp.name.decode("utf-8")
+                                "filename": fname,
+                                "dll_name": entry.dll.decode("utf-8"),
+                                "import": imp.name.decode("utf-8")
                             })
                         
                         else:
                             data.append({
-                                pe_imp_fields[FIELD_EXENAME]: fname,
-                                pe_imp_fields[FIELD_LIBNAME]: entry.dll.decode("utf-8"),
-                                pe_imp_fields[FIELD_IMPORT]: str(imp.ordinal)
+                                "filename": fname,
+                                "dll_name": entry.dll.decode("utf-8"),
+                                "import": str(imp.ordinal)
                             })
             
             else:
