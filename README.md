@@ -30,4 +30,4 @@ Just invoke the script name, provide at least one file name and the script outpu
 Some scripts use VirusTotal API. To use them, update the file `api_keys.py` and replace the dummy API keys with your own keys.
 
 ### Advanced usage
-The `search` function allows the use of other functions in a modular fashion. See file `example.py` to see how this can be achieved.
+The `search` function allows the use of other functions in a modular fashion. File `example.py` shows how this can be achieved.
