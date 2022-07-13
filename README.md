@@ -33,23 +33,20 @@ Some scripts use VirusTotal API (currently, only `vt_scout_MA.py` needs it). To 
 ### Advanced usage
 `search_MA` contains `search`, a function that allows the use of other scripts in a modular fashion. For example, suppose you have a set of executables, and you want to query VirusTotal about only those importing `LoadLibraryW`. You can do the following:
 
-	from get_pe_imports_MA import get_pe_imports
-	from search_MA import search
-	from vt_scout_MA import *
-	from write_csv_data_MA import write_csv_data
+	import malana
 	
 	data = set()
 	# build your set here
 
 	# read imports from the dataset
-	imports = get_pe_imports(data)
+	imports = malana.get_pe_imports(data)
 
 	# get all executables importing LoadLibraryW
 	rule = {"import": "LoadLibraryW"}
-	load_library_pe = search(imports, rule, "filename")
+	load_library_pe = malana.search(imports, rule, "filename")
 
 	# scout VT looking for PE files that match the rule above
-	result = vt_scout(load_library_pe)
+	result = malana.vt_scout(load_library_pe)
 
 	# export results to a CSV file 
-	write_csv_data(result, vt_analysis_fields, "output.csv")
+	malana.write_csv_data(result, vt_analysis_fields, "output.csv")
