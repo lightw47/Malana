@@ -1,4 +1,5 @@
-from api_keys_MA import vt_api_key
+from api_keys import vt_api_key
+from enum import Enum
 
 import pefile
 import hashlib
@@ -10,20 +11,12 @@ pe_exp_fields = ["filename", "export"]
 pe_imp_fields = ["filename", "dll_name", "import"]
 vt_analysis_fields = ["filename", "sha256", "engine_name", "category", "result", "engine_update"]
 
-hash_types = ["md5", "sha1", "sha256", "ssdeep", "imphash", "section_hash"]
-HASH_MD5 = 0
-HASH_SHA1 = 1
-HASH_SHA256 = 2
-HASH_SSDEEP = 3
-HASH_IMPHASH = 4
-HASH_SECTION = 5
-
-def get_pe_exports(arg_fname_list):
+def get_pe_exports(arg_fname_set: set) -> list:
     
     data = list()
     pe = 0
 
-    for fname in arg_fname_list:
+    for fname in arg_fname_set:
         
         try:
             pe = pefile.PE(fname)
@@ -56,12 +49,12 @@ def get_pe_exports(arg_fname_list):
     return data
 
 
-def get_pe_imports(arg_fname_list):
+def get_pe_imports(arg_fname_set: set) -> list:
     
     data = list()
     pe = 0
 
-    for fname in arg_fname_list:
+    for fname in arg_fname_set:
         
         try:
             pe = pefile.PE(fname)
@@ -97,11 +90,11 @@ def get_pe_imports(arg_fname_list):
     return data
 
 
-def get_hashes(arg_fname_list):
+def get_hashes(arg_fname_set: set) -> list:
     
     data = list()
 
-    for fname in arg_fname_list:
+    for fname in arg_fname_set:
         err = False
         
         try:
@@ -119,7 +112,7 @@ def get_hashes(arg_fname_list):
         digest = hashlib.md5(content).hexdigest()
         data.append({
             "filename": fname,
-            "hash_type": hash_types[HASH_MD5],
+            "hash_type": "md5",
             "section_name": None,
             "digest": digest
         })
@@ -127,7 +120,7 @@ def get_hashes(arg_fname_list):
         digest = hashlib.sha1(content).hexdigest()
         data.append({
             "filename": fname,
-            "hash_type": hash_types[HASH_SHA1],
+            "hash_type": "sha1",
             "section_name": None,
             "digest": digest
         })
@@ -135,7 +128,7 @@ def get_hashes(arg_fname_list):
         digest = hashlib.sha256(content).hexdigest()
         data.append({
             "filename": fname,
-            "hash_type": hash_types[HASH_SHA256],
+            "hash_type": "sha256",
             "section_name": None,
             "digest": digest
         })
@@ -143,7 +136,7 @@ def get_hashes(arg_fname_list):
         fuzzy_hash = ssdeep.hash_from_file(fname)
         data.append({
             "filename": fname,
-            "hash_type": hash_types[HASH_SSDEEP],
+            "hash_type": "ssdeep",
             "section_name": None,
             "digest": fuzzy_hash
         })
@@ -154,7 +147,7 @@ def get_hashes(arg_fname_list):
             imphash = pe.get_imphash()
             data.append({
                 "filename": fname,
-                "hash_type": hash_types[HASH_IMPHASH],
+                "hash_type": "imphash",
                 "section_name": None,
                 "digest": imphash
             })
@@ -163,7 +156,7 @@ def get_hashes(arg_fname_list):
                 sechash = section.get_hash_md5()
                 data.append({
                     "filename": fname,
-                    "hash_type": hash_types[HASH_SECTION],
+                    "hash_type": "section_hash",
                     "section_name": section.Name.decode("utf-8"),
                     "digest": sechash
                 })
@@ -176,13 +169,13 @@ def get_hashes(arg_fname_list):
     return data
 
 
-def vt_scout(arg_fname_list):
+def vt_scout(arg_fname_set: set) -> list:
 
     data = list()
 
     with vt.Client(vt_api_key) as client:
 
-        for fname in arg_fname_list:
+        for fname in arg_fname_set:
 
             try:
                 print("Scouting file: " + fname)
@@ -212,7 +205,8 @@ def vt_scout(arg_fname_list):
     return data
 
 
-def search(arg_dataset, arg_criteria, arg_key):
+def search(arg_dataset: list, arg_criteria: dict, arg_key: str) -> set:
+    
     result = set()
 
     for entry in arg_dataset:
@@ -231,13 +225,13 @@ def search(arg_dataset, arg_criteria, arg_key):
     return result
 
 
-def write_console_output(arg_dataset):
+def write_console_output(arg_dataset: list):
     
     for entry in arg_dataset:
         print(entry)
 
 
-def write_csv_data(arg_dataset, arg_fields, arg_filename):
+def write_csv_data(arg_dataset: list, arg_fields: list, arg_filename: str):
     with open(arg_filename, "w") as csv_file:
         
         # write fields header
