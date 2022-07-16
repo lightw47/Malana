@@ -1,5 +1,4 @@
 from api_keys import vt_api_key
-from enum import Enum
 
 import pefile
 import hashlib
