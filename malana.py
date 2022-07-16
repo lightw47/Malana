@@ -1,7 +1,9 @@
 from api_keys import vt_api_key
 
-import pefile
+import argparse
 import hashlib
+
+import pefile
 import ssdeep
 import vt
 
@@ -9,6 +11,43 @@ hash_fields = ["filename", "hash_type", "section_name", "digest"]
 pe_exp_fields = ["filename", "export"]
 pe_imp_fields = ["filename", "dll_name", "import"]
 vt_analysis_fields = ["filename", "sha256", "engine_name", "category", "result", "engine_update"]
+
+def argparse_build_set(arg_description: str):
+    
+    parser = argparse.ArgumentParser(description = arg_description)
+    parser.add_argument(
+        "filename",
+        type = str,
+        nargs = '+',
+        help = "Name of the file to be analyzed"
+    )
+    parser.add_argument(
+        "-o",
+        metavar = "csvoutput",
+        type = str,
+        required = False,
+        help = "Output file where data is written in CSV format"
+    )
+    args = parser.parse_args()
+    
+    return (set(args.filename), args.o)
+
+
+def standalone_function(
+    arg_dataset: set,
+    arg_function,
+    arg_fields: list,
+    arg_output: str
+):
+           
+    data = arg_function(arg_dataset) 
+    if arg_output == None:
+        print()
+        write_console_output(data)
+    else:
+        write_csv_data(data, arg_fields, arg_output)
+        print("Output written to " + arg_output)
+
 
 def get_pe_exports(arg_fname_set: set) -> list:
     
