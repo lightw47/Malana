@@ -101,21 +101,22 @@ def get_pe_imports(arg_fname_set: set) -> list:
                 
                 for entry in pe.DIRECTORY_ENTRY_IMPORT:
                     for imp in entry.imports:
-                        
-                        if imp.name != None:
-                            data.append({
-                                "filename": fname,
-                                "dll_name": entry.dll.decode("utf-8"),
-                                "import": imp.name.decode("utf-8")
-                            })
-                        
+
+                        funcname = None
+
+                        if not imp.name:
+                            funcname = pefile.ordlookup.ordLookup(entry.dll, imp.ordinal, make_name=True).decode("utf-8")
+                            if not funcname:
+                                funcname = str(imp.ordinal)
                         else:
-                            data.append({
-                                "filename": fname,
-                                "dll_name": entry.dll.decode("utf-8"),
-                                "import": str(imp.ordinal)
-                            })
-            
+                            funcname = imp.name.decode("utf-8")
+                        
+                        data.append({
+                            "filename": fname,
+                            "dll_name": entry.dll.decode("utf-8"),
+                            "import": funcname
+                        })
+        
             else:
                 print("Have no imported functions: " + fname)
         
