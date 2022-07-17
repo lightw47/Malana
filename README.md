@@ -5,15 +5,10 @@ Malana was tested with Python version **3.7.3**.
 
 ## Dependencies
 Malana depends on
-- `pefile`
-- `ssdeep`
-- `vt`
-
-`pefile` can be easily installed via pip: `pip install pefile`
-
-To install `ssdeep`, you need to install some libraries before installing the module itself. On Linux systems, you may need to install `libfuzzy-dev` before `pip install ssdeep`. On Windows, download [ssdeep Python wrapper for Windows](https://github.com/MacDue/ssdeep-windows-32_64), then run `setup.py install`.
-
-`vt` is also easily installed via pip: `pip install vt-py`
+- `pefile`: easily installed via pip: `pip3 install pefile`.
+- `pyimpfuzzy`: see `ssdeep` installation instructions below. Then, `pip3 install pyimpfuzzy`.
+- `ssdeep`: some libraries must be installed before installing the module itself. On Linux systems, you may need to install `libfuzzy-dev` before `pip3 install ssdeep`. On Windows, download [ssdeep Python wrapper for Windows](https://github.com/MacDue/ssdeep-windows-32_64), then run `setup.py install`.
+- `vt`: also easily installed via pip: `pip3 install vt-py`
 
 ## How to use
 Malana currently consists of the following "core" scripts, indicated by the `_MA` suffix:

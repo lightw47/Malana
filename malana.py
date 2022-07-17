@@ -4,6 +4,7 @@ import argparse
 import hashlib
 
 import pefile
+import pyimpfuzzy
 import ssdeep
 import vt
 
@@ -189,6 +190,14 @@ def get_hashes(arg_fname_set: set) -> list:
                 "hash_type": "imphash",
                 "section_name": None,
                 "digest": imphash
+            })
+
+            impfuzzy = pyimpfuzzy.get_impfuzzy(fname)
+            data.append({
+                "filename": fname,
+                "hash_type": "impfuzzy",
+                "section_name": None,
+                "digest": impfuzzy
             })
             
             for section in pe.sections:
