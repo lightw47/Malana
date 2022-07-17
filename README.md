@@ -1,6 +1,8 @@
 # Malana
 **Malana** is a Python module aimed to help me do static analysis of files, usually malware.
 
+Malana was tested with Python version **3.7.3**.
+
 ## Dependencies
 Malana depends on
 - `pefile`
