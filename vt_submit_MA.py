@@ -1,15 +1,15 @@
 import malana
 
-print("LightW's Malana - \"VT Scout\"")
+print("LightW's Malana - \"VT Submit\"")
 print()
 
 (dataset, output) = malana.argparse_build_set(
-    arg_description = "Shows last analysis results of given files, searching them by their hashes. Files are NOT submitted to VirusTotal."
+    arg_description = "Submit files to VirusTotal for scanning."
 )
 
 malana.standalone_function(
     arg_dataset = dataset,
-    arg_function = malana.vt_scout,
+    arg_function = malana.vt_submit,
     arg_fields = malana.vt_analysis_fields,
     arg_output = output
 )

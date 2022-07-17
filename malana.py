@@ -2,6 +2,7 @@ from api_keys import vt_api_key
 
 import argparse
 import hashlib
+import time
 
 import pefile
 import ssdeep
@@ -233,6 +234,46 @@ def vt_scout(arg_fname_set: set) -> list:
                             "result": analysis[entry]["result"],
                             "engine_update": analysis[entry]["engine_update"]
                         })
+
+            except vt.APIError as err:
+                print("VirusTotal error: " + err.message)
+
+            except FileNotFoundError:
+                print("File not found: " + fname)
+
+    return data
+
+
+def vt_submit(arg_fname_set: set) -> list:
+
+    data = list()
+
+    with vt.Client(vt_api_key) as client:
+
+        for fname in arg_fname_set:
+
+            try:
+                
+                f = open(fname, "rb")   
+                analysis = client.scan_file(f, wait_for_completion=True)
+                print(analysis.id)
+                print("File submitted to VT: " + fname)
+                
+                f = open(fname, "rb")
+                content = f.read()
+                hash = hashlib.sha256(content).hexdigest()
+                f.close()
+                    
+#                    for entry in analysis:
+#
+#                        data.append({
+#                            "filename": fname,
+#                            "sha256": hash,
+#                            "engine_name": analysis[entry]["engine_name"],
+#                            "category": analysis[entry]["category"],
+#                            "result": analysis[entry]["result"],
+#                            "engine_update": analysis[entry]["engine_update"]
+#                        })
 
             except vt.APIError as err:
                 print("VirusTotal error: " + err.message)
