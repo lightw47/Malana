@@ -9,6 +9,7 @@ import ssdeep
 import vt
 
 hash_fields = ["filename", "hash_type", "section_name", "digest"]
+comp_fuzzy_fields = ["filename1", "filename2", "similarity", "fuzzy1", "fuzzy2"]
 pe_exp_fields = ["filename", "export"]
 pe_imp_fields = ["filename", "dll_name", "import"]
 vt_analysis_fields = ["filename", "sha256", "engine_name", "category", "result", "engine_update"]
@@ -213,6 +214,29 @@ def get_hashes(arg_fname_set: set) -> list:
             "do nothing, this is not a PE file"
             
         f.close()
+
+    return data
+
+
+def compare_fuzzy(arg_fname_list: set) -> list:
+
+    data = list()
+    fname_list = list(arg_fname_list)
+
+    for i in range(0, len(fname_list)):
+        for j in range(i+1, len(fname_list)):
+            
+            fuzzy_1 = ssdeep.hash_from_file(fname_list[i])
+            fuzzy_2 = ssdeep.hash_from_file(fname_list[j])
+            similarity = ssdeep.compare(fuzzy_1, fuzzy_2)
+
+            data.append({
+                "filename1": fname_list[i],
+                "filename2": fname_list[j],
+                "similarity": str(similarity),
+                "fuzzy1": fuzzy_1,
+                "fuzzy2": fuzzy_2
+            })
 
     return data
 
